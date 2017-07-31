@@ -1,3 +1,7 @@
+# workbook:
+# file:///C:/Users/sgenn_000/Documents/GitHub/Udemy/Data%20Science%20and%20Machine%20Learning%20Bootcamp%20with%20R/Guides/Machine%20Learning%20with%20R/Linear%20Regression%20Lecture.html
+
+
 df <- read.csv('C:\\Users\\sgenn_000\\Documents\\GitHub\\Udemy\\Data Science and Machine Learning Bootcamp with R\\Guides\\Machine Learning with R\\student-mat.csv',sep=';')
 head(df)
 summary(df)
@@ -73,15 +77,27 @@ res <- as.data.frame(res)
 head(res)
 ggplot(res, aes(res)) + geom_histogram(fill='blue', alpha=0.5)
 
-
+# the following plot shows:
+# Residuals vs Fitted Values
+# Normal Q-Q
+# Scale-Location
+# Residuals vs Leverage
+# See: https://en.wikipedia.org/wiki/Regression_validation
 plot(model)
 
+# build some predictions using the model and the test data set
+# It knows to predict G3 since that's what we put on the left side of the lm() formula, above
 G3.predictions <- predict(model, test)
 
+# format the predicted results as a data frame
 results <- cbind(G3.predictions, test$G3)
-colnames(results) <- c('pred', 'real')
+colnames(results) <- c('predicted', 'actual')
 results <- as.data.frame(results)
+head(results)
+min(results) # this is negative, which is unrealstic for test scores
 
+# fix the negative predictions we saw when we plotted a 
+# histogram of the residuals
 to_zero <- function(x) {
   if (x < 0){
     return(0)
@@ -89,17 +105,21 @@ to_zero <- function(x) {
     return(x)
   }
 }
+results$predicted <- sapply(results$predicted, to_zero)
 
-results$pred <- sapply(results$pred, to_zero)
-
-mse <- mean((results$real-results$pred)^2)
+# Calculate Mean-Squared Error
+mse <- mean((results$actual-results$predicted)^2)
 mse # mean squared error
-mse^0.5 # root mean squared error
+mse^0.5 # root mean squared error (RMSE)
 
-SSE = sum((results$pred - results$real)^2)
-SST = sum((mean(df$G3) - results$real)^2)
+# Calculate the Sum of the Squared-Errors (SSE)
+SSE = sum((results$predicted - results$actual)^2)
+# Calculate the Sum of Squared Total (SST)
+SST = sum((mean(df$G3) - results$actual)^2)
+# Calculate the R-Squared value
 R2 = 1 - SSE/SST
 R2 # R-Squared Value of model predictions
+# 0.8 means we're explaining about 80% variance on the test data
 
 
 
