@@ -13,7 +13,8 @@
 #
 # Accuracy: (TP + TN) / TOTAL
 # Error Rate: (FP + FN) / TOTAL
-# 
+# Recall: TP / (FN + TP)
+# Precision: TP / (FP + TP)
 
 setwd("C:/Users/sgenn_000/Documents/GitHub/Udemy/Data Science and Machine Learning Bootcamp with R/Guides/Machine Learning with R")
 

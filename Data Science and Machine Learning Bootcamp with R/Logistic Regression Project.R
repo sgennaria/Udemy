@@ -6,6 +6,7 @@ adult <- read.csv('adult_sal.csv')
 head(adult)
 
 # the index was repeated... drop it
+library(plyr)
 library(dplyr)
 adult <- select(adult, -X)
 head(adult)
@@ -124,4 +125,74 @@ str(adult)
 # create a histogram of ages, colored by income...
 library(ggplot2)
 
-ggplot(adult, aes(age)) + geom_histogram(bins=70, aes(fill=factor(income)), col='black')
+ggplot(adult, aes(age)) + geom_histogram(aes(fill=income), col='black', binwidth=1) + theme_bw()
+
+ggplot(adult, aes(hr_per_week)) + geom_histogram() + theme_bw()
+
+# rename country to region, since we changed the values...
+colnames(adult)
+colnames(adult)[14] <- 'region'
+colnames(adult)
+# alternatively: adult <- rename(adult, region = country)
+
+
+ggplot(adult, aes(region)) + geom_bar(aes(fill=income), col='black') + theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+head(adult)
+
+# time to make a logistic regression model to predict salary.
+# split the data set into training and testing subsets...
+library(caTools)
+set.seed(101)
+split <- sample.split(adult$income, SplitRatio = 0.7)
+train <- subset(adult, split==TRUE)
+test <- subset(adult, split==FALSE)
+str(train)
+str(test)
+
+# train a model to predict income using all of the other features...
+model <- glm(income ~ . , family=binomial(logit), data=train)
+summary(model)
+
+# use the step() function to try to hone the model...
+new.step.model <- step(model)
+summary(new.step.model)
+
+# create a confusion matrix with type='response'
+test$predicted.income <- predict(model, test, type='response')
+cm <- table(test$income, test$predicted.income > 0.5)
+cm
+cm[1,1] # TN
+cm[1,2] # FP (Type 1)
+cm[2,1] # FN (Type 2)
+cm[2,2] # TP
+
+# Confusion Matrix:
+# TP = True Positives
+# TN = True Negatives
+# FP = False Positives (Type 1 Error)
+# FN = False Negatives (Type 2 Error)
+#           |PREDICTED No | PREDICTED Yes|
+# ACTUAL No |    TN       |     FP (T1)  |
+# ----------|-------------|--------------|    
+# ACTUAL Yes|    FN (T2)  |     TP       |
+#----------------------------------------|
+#
+# Accuracy: (TN + TP) / TOTAL
+# Error Rate: (FN + FP) / TOTAL
+# Recall: TP / (FN + TP) 
+# Precision: TP / (FP + TP)
+# NB: In the video, the instructor's formulae were wrong
+# https://en.wikipedia.org/wiki/Confusion_matrix
+# https://en.wikipedia.org/wiki/Precision_and_recall#Definition_.28classification_context.29
+
+accuracy <- (cm[1,1] + cm[2,2]) / sum(cm)
+error.rate <-(cm[1,2] + cm[2,1]) / sum(cm)
+recall <- cm[2,2] / sum(cm[2,])
+precision <- cm[2,2] / sum(cm[,2])
+
+accuracy
+error.rate
+recall
+precision
