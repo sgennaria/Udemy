@@ -7,7 +7,7 @@ library(ISLR)
 head(iris)
 str(iris)
 
-install.packages('e1071')
+#install.packages('e1071')
 library(e1071)
 ?svm
 
