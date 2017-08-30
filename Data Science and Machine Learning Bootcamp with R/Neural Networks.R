@@ -72,7 +72,7 @@ plot(nn)
 # the nn is basically a black-box... we can't say much about the fitting, weights or the model, but it's ready to use
 
 # predict the output of the test data set without the labels (cols 1:13)
-predicted.nn.values <- compute(nn, test[1:13])
+predicted.nn.values <- compute(nn, test[1:(ncol(test)-1)])
 str(predicted.nn.values)
 # it's a list...neurons and net.result
 # we want the net.result, but we have to undo the scaling to get the true predictions

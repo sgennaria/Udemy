@@ -1,8 +1,8 @@
 # workbook:
-# file:///C:/Users/sgenn_000/Documents/GitHub/Udemy/Data%20Science%20and%20Machine%20Learning%20Bootcamp%20with%20R/Guides/Machine%20Learning%20with%20R/Linear%20Regression%20Lecture.html
+# file:///C:/Users/shawn.gennaria/Documents/GitHub/Udemy/Data%20Science%20and%20Machine%20Learning%20Bootcamp%20with%20R/Guides/Machine%20Learning%20with%20R/Linear%20Regression%20Lecture.html
 
 
-df <- read.csv('C:\\Users\\sgenn_000\\Documents\\GitHub\\Udemy\\Data Science and Machine Learning Bootcamp with R\\Guides\\Machine Learning with R\\student-mat.csv',sep=';')
+df <- read.csv('C:\\Users\\shawn.gennaria\\Documents\\GitHub\\Udemy\\Data Science and Machine Learning Bootcamp with R\\Guides\\Machine Learning with R\\student-mat.csv',sep=';')
 head(df)
 summary(df)
 
